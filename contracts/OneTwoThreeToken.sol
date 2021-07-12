@@ -1,11 +1,85 @@
 pragma solidity 0.6.12;
 
-import "@pancakeswap/pancake-swap-lib/contracts/token/BEP20/BEP20.sol";
+import "@123swap/123swap-lib/contracts/token/BEP20/BEP20.sol";
+import "./TokenTimelock.sol";
 
-// CakeToken with Governance.
-contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
-    function mint(address _to, uint256 _amount) public onlyOwner {
+// OneTwoThreeToken with Governance.
+contract OneTwoThreeToken is BEP20('123 Token', '123') {
+
+    /// Maximum tokens to be allocated on the sale
+    uint256 public constant TOKENS_SALE_HARD_CAP = 40000000000000000000000000; // 40 000 000 * 10**18
+
+    /// Base exchange rate is set to 1 BNB = 6000 123.
+    uint256 public constant BASE_RATE = 6000;
+
+    /// @dev sale start time 01.08.2021
+    uint256 private constant dateSaleStart = 1627765200;
+
+    /// @dev sale end time 01.09.2021
+    uint256 private constant dateSaleEnd = 1630443600;
+
+    /// @dev team time lock time 01.09.2022
+    uint64 private constant dateTeamTokensLockedTill = 1661979600;
+
+    bool public tokenSaleClosed = false;
+
+    address public timelockContractAddress;
+
+    function isSalePeriod() public view returns (bool) {
+        if (totalSupply() > TOKENS_SALE_HARD_CAP || now >= dateSaleEnd){
+            return false;
+        } else {
+            return now > dateSaleStart;
+        }
+    }
+
+    modifier inProgress {
+        require(totalSupply() < TOKENS_SALE_HARD_CAP && !tokenSaleClosed && now >= dateSaleStart);
+        _;
+    }
+
+    modifier beforeEnd {
+        require(!tokenSaleClosed);
+        _;
+    }
+
+    function buyTokensOnInvestorBehalf(address _beneficiary, uint256 _tokens) public onlyOwner beforeEnd {
+        mint(_beneficiary, _tokens);
+    }
+
+    function buyTokensOnInvestorBehalfBatch(address[] memory _addresses, uint256[] memory _tokens) public onlyOwner beforeEnd {
+        require(_addresses.length == _tokens.length);
+        require(_addresses.length <= 100);
+
+        for (uint256 i = 0; i < _tokens.length; i = i.add(1)) {
+            mint(_addresses[i], _tokens[i]);
+        }
+    }
+
+    function close() public onlyOwner beforeEnd {
+        /// team tokens are equal to 2M
+        uint256 lockedTokens = 2000000000000000000000000; // 2 000 000 * 10**18
+        // liquidity tokens 13M
+        uint256 partnerTokens = 13000000000000000000000000; // 13 000 000 * 10**18
+
+        generateLockedTokens(lockedTokens);
+        generatePartnerTokens(partnerTokens);
+
+        tokenSaleClosed = true;
+    }
+
+    function generateLockedTokens(uint lockedTokens) internal{
+        TokenTimelock lockedTeamTokens = new TokenTimelock(this, owner(), dateTeamTokensLockedTill);
+        timelockContractAddress = address(lockedTeamTokens);
+        mint(timelockContractAddress, lockedTokens);
+    }
+
+    function generatePartnerTokens(uint partnerTokens) internal{
+        mint(owner(), partnerTokens);
+    }
+
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (OneTwoThreeMasterChef).
+    function mint(address _to, uint256 _amount) public onlyOwner beforeEnd {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
     }
@@ -16,7 +90,7 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
     // Which is copied and modified from COMPOUND:
     // https://github.com/compound-finance/compound-protocol/blob/master/contracts/Governance/Comp.sol
 
-    /// @notice A record of each accounts delegate
+    /// @dev A record of each accounts delegate
     mapping (address => address) internal _delegates;
 
     /// @notice A checkpoint for marking number of votes from a given block
@@ -112,9 +186,9 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
         );
 
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "CAKE::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "CAKE::delegateBySig: invalid nonce");
-        require(now <= expiry, "CAKE::delegateBySig: signature expired");
+        require(signatory != address(0), "123::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "123::delegateBySig: invalid nonce");
+        require(now <= expiry, "123::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -144,7 +218,7 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
         view
         returns (uint256)
     {
-        require(blockNumber < block.number, "CAKE::getPriorVotes: not yet determined");
+        require(blockNumber < block.number, "123::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
         if (nCheckpoints == 0) {
@@ -181,7 +255,7 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
         internal
     {
         address currentDelegate = _delegates[delegator];
-        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying CAKEs (not scaled);
+        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying 123s (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -217,7 +291,7 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
     )
         internal
     {
-        uint32 blockNumber = safe32(block.number, "CAKE::_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, "123::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;

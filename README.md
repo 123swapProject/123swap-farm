@@ -1,17 +1,17 @@
-# PanCake Farming 🥞
+# 123swap Farming 🥞
 
-[![Actions Status](https://github.com/pancakeswap/pancake-farm/workflows/CI/badge.svg)](https://github.com/pancakeswap/pancake-farm/actions)
-[![codecov](https://codecov.io/gh/pancakeswap/pancake-farm/branch/master/graph/badge.svg?token=5XMLP74IR0)](https://codecov.io/gh/pancakeswap/pancake-farm)
+[![Actions Status](https://github.com/123swap/onetwothree-farm/workflows/CI/badge.svg)](https://github.com/123swap/onetwothree-farm/actions)
+[![codecov](https://codecov.io/gh/123swap/onetwothree-farm/branch/master/graph/badge.svg?token=5XMLP74IR0)](https://codecov.io/gh/123swap/onetwothree-farm)
 
-https://pancakeswap.finance. Feel free to read the code. More details coming soon.
+https://123swap.finance. Feel free to read the code. More details coming soon.
 
 ## Deployed Contracts / Hash
 
 ### BSCMAINNET
 
-- CakeToken - https://bscscan.com/token/0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82
-- MasterChef - https://bscscan.com/address/0x73feaa1eE314F8c655E354234017bE2193C9E24E
-- (Uni|Cake)swapV2Factory - https://bscscan.com/address/0xBCfCcbde45cE874adCB698cC183deBcF17952812
-- (Uni|Cake)swapV2Router02 - https://bscscan.com/address/0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F
-- (Uni|Cake)swapV2Pair init code hash - `0xd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66`
+- OneTwoThreeBonusToken - https://bscscan.com/token/0x843819dF7e79C48C5F9Ca84e371c1B4464AB77BD
+- OneTwoThreeMasterChef - https://bscscan.com/address/0x14F3CC0fb6CfC952B588e935ce1067B13F5254a8
+- (Uni|123)swapV2Factory - https://bscscan.com/address/0xAE105BEd44f032b9fd39A2CACffdF1705dF0d40E
+- (Uni|123)swapV2Router02 - https://bscscan.com/address/0x829AdDC0B20AA383533488fBf00f5bE2D8326793
+- (Uni|123)swapV2Pair init code hash - `0x022c9d4bf7f2eda7ea5ce861101c67e0343f890732a9f633f2ad8a18fa51842f`
 - MultiCall - 0xE1dDc30f691CA671518090931e3bFC1184BFa4Aa

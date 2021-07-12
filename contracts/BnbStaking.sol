@@ -1,9 +1,9 @@
 pragma solidity 0.6.12;
 
-import '@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol';
+import '@123swap/123swap-lib/contracts/math/SafeMath.sol';
+import '@123swap/123swap-lib/contracts/token/BEP20/IBEP20.sol';
+import '@123swap/123swap-lib/contracts/token/BEP20/SafeBEP20.sol';
+import '@123swap/123swap-lib/contracts/access/Ownable.sol';
 
 // import "@nomiclabs/buidler/console.sol";
 
@@ -13,6 +13,7 @@ interface IWBNB {
     function withdraw(uint256) external;
 }
 
+// SmartContract
 contract BnbStaking is Ownable {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
@@ -27,9 +28,9 @@ contract BnbStaking is Ownable {
     // Info of each pool.
     struct PoolInfo {
         IBEP20 lpToken;           // Address of LP token contract.
-        uint256 allocPoint;       // How many allocation points assigned to this pool. CAKEs to distribute per block.
-        uint256 lastRewardBlock;  // Last block number that CAKEs distribution occurs.
-        uint256 accCakePerShare; // Accumulated CAKEs per share, times 1e12. See below.
+        uint256 allocPoint;       // How many allocation points assigned to this pool. 123b to distribute per block.
+        uint256 lastRewardBlock;  // Last block number that 123b distribution occurs.
+        uint256 accCakePerShare; // Accumulated 123b per share, times 1e12. See below.
     }
 
     // The REWARD TOKEN
@@ -42,7 +43,7 @@ contract BnbStaking is Ownable {
     // WBNB
     address public immutable WBNB;
 
-    // CAKE tokens created per block.
+    // 123b tokens created per block.
     uint256 public rewardPerBlock;
 
     // Info of each pool.
@@ -53,9 +54,9 @@ contract BnbStaking is Ownable {
     uint256 public limitAmount = 10000000000000000000;
     // Total allocation poitns. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
-    // The block number when CAKE mining starts.
+    // The block number when 123b mining starts.
     uint256 public startBlock;
-    // The block number when CAKE mining ends.
+    // The block number when 123b mining ends.
     uint256 public bonusEndBlock;
 
     event Deposit(address indexed user, uint256 amount);
